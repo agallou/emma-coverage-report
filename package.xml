@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.9.0" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>agEmmaCoverageReportPlugin</name>
+ <channel>plugins.symfony-project.org</channel>
+ <summary>Generate coverage report in emma xml format</summary>
+ <description>Generate coverage report in emma xml format</description>
+ <lead>
+  <name>agallou</name>
+  <user>agallou</user>
+  <email>ecrire@adrien-gallou.fr</email>
+  <active>yes</active>
+ </lead>
+ <date>2010-04-02</date>
+ <time>13:08:50</time>
+ <version>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.symfony-project.org/license">MIT license</license>
+ <notes>
+-
+ </notes>
+ <contents>
+  <dir name="/">
+    <file role="data" name="README" />
+    <file role="data" name="LICENSE" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.1</min>
+   </pearinstaller>
+   
+  </required>
+ </dependencies>
+ <phprelease/>
+ <changelog>
+  <release>
+   <version>
+    <release>1.0.0</release>
+    <api>1.0.0</api>
+   </version>
+   <stability>
+    <release>stable</release>
+    <api>stable</api>
+   </stability>
+   <license uri="http://www.symfony-project.org/license">MIT license</license>
+   <license>MIT</license>
+   <date>2010-04-02</date>
+   <notes>
+* initial release
+   </notes>
+  </release>
+ </changelog>
+</package>
