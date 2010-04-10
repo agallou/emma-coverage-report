@@ -102,7 +102,7 @@ class ecrEmmaRenderer extends ecrRenderer
       $strFile = str_replace("/", "_", $file);
       $srcfile->setAttribute('name', $strFile);
       $numberOfLines = $this->getNumberOfLinesFile(sfConfig::get('sf_root_dir') . DIRECTORY_SEPARATOR . $file);
-      $testedLines = round(substr($coveragePercent, 0, -1) / 100 * $numberOfLines);
+      $testedLines = round($coveragePercent / 100 * $numberOfLines);
       $totalLines += $numberOfLines;
       $totalTestedLines += $testedLines;
       $testedLinesPackage[$key] += $testedLines;
