@@ -53,19 +53,19 @@ class ecrReport
    */
   protected function getTestedFileFromTestFile($testFile)
   {
-    $basename   = pathinfo($testFile, PATHINFO_BASENAME);
-    $testedFile = str_replace(array('Test', '.php'), array('', ''), $basename);
-    $autoload   = ecrSimpleAutoload::getInstance();
-    if (isset($autoload->classes[$testedFile]))
+    $basename = pathinfo($testFile, PATHINFO_BASENAME);
+    $autoload = ecrSimpleAutoload::getInstance();
+    $class    = str_replace(array('Test', '.php'), array('', ''), $basename);
+    if (!is_null($autoload->getClassPath($class)))
     {
-      $class = $autoload->classes[$testedFile];
+      $testedFile = $autoload->getClassPath($class);
     }
     else
     {
-      $class = 'fichierNonTrouve';
+      $testedFile = 'fichierNonTrouve';
     }
-    $class = str_replace(sfConfig::get('sf_root_dir'), '.', $class);
-    return $class;
+    $testedFile = str_replace(sfConfig::get('sf_root_dir'), '.', $testedFile);
+    return $testedFile;
   }
 
   /**
