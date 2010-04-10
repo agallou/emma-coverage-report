@@ -54,7 +54,8 @@ class ecrReport
   protected function getTestedFileFromTestFile($testFile)
   {
     $basename = pathinfo($testFile, PATHINFO_BASENAME);
-    $autoload = ecrSimpleAutoload::getInstance();
+    $autoload = ecrSimpleAutoload::getInstance(sfConfig::get('sf_cache_dir').'/project_autoload.cache');
+    $autoload->reload();
     $class    = str_replace(array('Test', '.php'), array('', ''), $basename);
     if (!is_null($autoload->getClassPath($class)))
     {
