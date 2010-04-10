@@ -99,7 +99,8 @@ class ecrEmmaRenderer extends ecrRenderer
     {
       $key = str_replace(array('/', '.'), array('_', ''), pathinfo($file, PATHINFO_DIRNAME));
       $srcfile = $dom->createElement('srcfile');
-      $srcfile->setAttribute('name', $file);
+      $strFile = str_replace("/", "\/", $file);
+      $srcfile->setAttribute('name', $strFile);
       $numberOfLines = $this->getNumberOfLinesFile(sfConfig::get('sf_root_dir') . $file);
       $testedLines = round(substr($coveragePercent, 0, -1) / 100 * $numberOfLines);
       $totalLines += $numberOfLines;
