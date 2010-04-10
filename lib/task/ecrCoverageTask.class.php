@@ -23,6 +23,7 @@ class ecrTestCoverageTask extends sfTestCoverageTask
     $coverage->setPhpOptions(array('xdebug-extension-path' => $this->xdebugExtensionPath));
     $coverage->verbose = $detailed;
     $coverage->base_dir = sfConfig::get('sf_root_dir');
+    $coverage->base_dir = '';
 
     return $coverage;
   }

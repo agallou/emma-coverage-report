@@ -19,23 +19,6 @@ class ecrLimeCoverage extends lime_coverage
     $this->harness = $harness;
   }
 
-  protected function checkForXdebug()
-  {
-    $phpOptions = $this->getPhpOptions();
-    if (!array_key_exists('xdebug-extension-path', $phpOptions))
-    {
-      if (!function_exists('xdebug_start_code_coverage'))
-      {
-        throw new Exception('You must install and enable xdebug before using lime coverage.');
-      }
-
-      if (!ini_get('xdebug.extended_info'))
-      {
-        throw new Exception('You must set xdebug.extended_info to 1 in your php.ini to use lime coverage.');
-      }
-    }
-  }
-
   /**
    * We just change the call to test to pass the path to xdebug extension
    *
@@ -44,7 +27,7 @@ class ecrLimeCoverage extends lime_coverage
    */
   public function process($files)
   {
-    $this->checkForXdebug();
+    ecrUtils::checkForXDebugExtenstion($this->getPhpOptions());
     if (!is_array($files))
     {
       $files = array($files);
