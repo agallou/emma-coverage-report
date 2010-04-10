@@ -29,7 +29,9 @@ class ecrReport
       $cmd        = sprintf('%s symfony ecr:coverage %s test/%s %s', sfToolkit::getPhpCli(), $options, $testFile, $testedFile);
       $output     = '';
       exec($cmd, $output);
-      $percent = substr($output[1], -3);
+      $matches = array();
+      preg_match('/TOTAL COVERAGE: (.*)%/', $output[2], $matches);
+      $percent = $matches[1];
       $coverage[$testedFile] = $percent;
     }
     return $coverage;

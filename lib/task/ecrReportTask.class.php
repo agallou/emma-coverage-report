@@ -23,6 +23,7 @@ class srCoverageReportTask extends sfBaseTask
   protected function execute($arguments = array(), $options = array())
   {
     ecrUtils::checkForXDebugExtenstion($options);
+    $this->createConfiguration(null, null);
     $report = new ecrReport();
     $report->setXDebugPath($options['xdebug-extension-path']);
     $renderer = ecrRendererFactory::create('emma', $report->getCoveragePercentByFile());
