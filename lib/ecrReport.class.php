@@ -54,45 +54,19 @@ class ecrReport
   protected function getTestedFileFromTestFile($testFile)
   {
     $basename   = pathinfo($testFile, PATHINFO_BASENAME);
-    //$testedFile = str_replace(array('Test', '.php'), array('', '.class.php'), $basename);
     $testedFile = str_replace(array('Test', '.php'), array('', ''), $basename);
-    //$autoload = sfSimpleAutoload::getInstance();
-    //$autoload = sfAutoload::getInstance();
-    $autoload = sfSimpleAutoload::getInstance();
-    //$autoload->reloadClasses();
-    //$autoload->register();
+    $autoload   = ecrSimpleAutoload::getInstance();
     if (isset($autoload->classes[$testedFile]))
     {
       $class = $autoload->classes[$testedFile];
     }
-    //var_dump($autoload->classes);
-    //die();
-    //$autoload->reloadClasses(true);
-    //var_dump($testedFile);
-    //$class = $autoload->getClassPath($testedFile);
-    if (!isset($class))
+    else
     {
       $class = 'fichierNonTrouve';
-      //throw new sfException('fichier testé non trouvé');
     }
     $class = str_replace(sfConfig::get('sf_root_dir'), '.', $class);
     return $class;
-
-    //return $testedPath;
   }
-
-  /**
-   *
-   * @param string $path
-   *
-   * @return string
-   */
-  /*
-  protected function getRelativePathFromSfRootDir($path)
-  {
-    return substr($path, strlen($this->getUnitTestsDir()));
-  }
-  */
 
   /**
    *
