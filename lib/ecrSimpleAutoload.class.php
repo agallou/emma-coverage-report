@@ -27,6 +27,7 @@ class ecrSimpleAutoload extends sfSimpleAutoload
    */
   public function getClassPath($class)
   {
+    $class = strtolower($class);
     if (!isset($this->classes[$class]))
     {
       return null;
