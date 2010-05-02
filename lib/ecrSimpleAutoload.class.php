@@ -19,18 +19,26 @@ class ecrSimpleAutoload extends sfSimpleAutoload
     return self::$instance;
   }
 
+  public function getAllFiles()
+  {
+    return $this->classes;
+  }
+
   /**
    *
-   * @param string$class
+   * @param string $class
    *
    * @return string
    */
   public function getClassPath($class)
   {
-    $class = strtolower($class);
     if (!isset($this->classes[$class]))
     {
-      return null;
+      if (!isset($this->classes[strtolower($class)]))
+      {
+        return null;
+      }
+      return $this->classes[strtolower($class)];
     }
     return $this->classes[$class];
   }

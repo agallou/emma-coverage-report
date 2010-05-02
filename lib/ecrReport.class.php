@@ -15,25 +15,35 @@ class ecrReport
   public function getCoveragePercentByFile()
   {
     $coverage  = array();
-    $ecrReport = new ecrReport();
-    $files = sfFinder::type('file')->name('*.php')->in($ecrReport->getUnitTestsDir());
-    $options = '';
+    $options   = '';
     if (!is_null($this->getXDebugPath()))
     {
       $options = sprintf(' --xdebug-extension-path="%s" ', $this->getXDebugPath());
     }
-    foreach ($files as $file)
+    $filesToTest = new ecrGenericFilesToTest();
+    $files       = $filesToTest->getAllFilesToTest();
+    foreach ($files as $testedFile)
     {
-      $testFile   = substr($file, strlen(sfConfig::get('sf_test_dir')) + 1);
-      $testedFile = $ecrReport->getTestedFileFromTestFile($file);
-      $cmd        = sprintf('%s symfony ecr:coverage %s test/%s %s', sfToolkit::getPhpCli(), $options, $testFile, $testedFile);
-      $output     = '';
-      exec($cmd, $output);
-      $matches = array();
-      preg_match('/TOTAL COVERAGE: (.*)%/', $output[2], $matches);
-      $percent = $matches[1];
-      $coverage[$testedFile] = $percent;
+      try
+      {
+        $testFile     = $filesToTest->getTestFileFromTestedFile($testedFile);
+        $testFile     = substr($testFile, strlen(sfConfig::get('sf_test_dir')) + 1);
+        $testedFile   = substr($testedFile, strlen(sfConfig::get('sf_root_dir')) + 1);
+        $cmd        = sprintf('%s symfony ecr:coverage %s test/%s %s', sfToolkit::getPhpCli(), $options, $testFile, $testedFile);
+        $output     = '';
+        exec($cmd, $output);
+        $matches = array();
+        preg_match('/TOTAL COVERAGE: (.*)%/', $output[2], $matches);
+        $percent = $matches[1];
+        $coverage[$testedFile] = $percent;
+      }
+      catch (ecrTestFileNotFoundException $ex)
+      {
+        $testedFile   = substr($testedFile, strlen(sfConfig::get('sf_root_dir')) + 1);
+        $coverage[$testedFile] = 0;
+      }
     }
+
     return $coverage;
   }
 
@@ -49,33 +59,9 @@ class ecrReport
 
   /**
    *
-   * @param string $testFile
-   *
    * @return string
    */
-  protected function getTestedFileFromTestFile($testFile)
-  {
-    $basename = pathinfo($testFile, PATHINFO_BASENAME);
-    $autoload = ecrSimpleAutoload::getInstance(sfConfig::get('sf_cache_dir').'/project_autoload.cache');
-    $autoload->reload();
-    $class    = str_replace(array('Test', '.php'), array('', ''), $basename);
-    if (!is_null($autoload->getClassPath($class)))
-    {
-      $testedFile = $autoload->getClassPath($class);
-    }
-    else
-    {
-      $testedFile = 'fichierNonTrouve';
-    }
-    $testedFile = str_replace(sfConfig::get('sf_root_dir'), '.', $testedFile);
-    return $testedFile;
-  }
-
-  /**
-   *
-   * @return string
-   */
-  protected function getUnitTestsDir()
+  public function getUnitTestsDir()
   {
     return sfConfig::get('sf_test_dir') . DIRECTORY_SEPARATOR . 'unit';
   }
