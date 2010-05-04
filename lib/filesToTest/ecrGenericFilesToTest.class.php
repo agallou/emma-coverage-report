@@ -4,9 +4,21 @@ class ecrGenericFilesToTest extends ecrFilesToTest
 
   public function getAllFilesToTest()
   {
-    $autoload = ecrSimpleAutoload::getInstance(sfConfig::get('sf_cache_dir').'/project_autoload.cache');
-    $autoload->reload();
-    return $autoload->getAllFiles();
+    $classes = array();
+    foreach ($this->getApplications() as $app)
+    {
+      $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', true);
+      sfContext::createInstance($configuration);
+      $autoload = ecrAutoload::getInstance();
+      $autoload->reloadClasses();
+      $classes += $autoload->getAllFiles();
+    }
+    return array_unique($classes);
+  }
+
+  protected function getApplications()
+  {
+    return sfFinder::type('dir')->maxdepth(0)->relative()->in(sfConfig::get('sf_apps_dir'));
   }
 
   public function getTestFileFromTestedFile($testedFile)

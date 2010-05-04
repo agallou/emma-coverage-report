@@ -1,7 +1,7 @@
 <?php
-class ecrSimpleAutoload extends sfSimpleAutoload
+class ecrAutoload extends sfAutoload
 {
-  static protected $instance;
+  static protected $instance = null;
 
   /**
    *
@@ -9,11 +9,11 @@ class ecrSimpleAutoload extends sfSimpleAutoload
    *
    * @return ecrSimpleAutoload
    */
-  static public function getInstance($cacheFile = null)
+  static public function getInstance()
   {
     if (!isset(self::$instance))
     {
-      self::$instance = new ecrSimpleAutoload($cacheFile);
+      self::$instance = new ecrAutoload();
     }
 
     return self::$instance;
