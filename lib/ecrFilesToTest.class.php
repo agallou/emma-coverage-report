@@ -66,4 +66,15 @@ abstract class ecrFilesToTest
     return $options[$value];
   }
 
+  /**
+   *
+   * @return array
+   */
+  public function getClassesNotFound()
+  {
+    $filesToTest = $this->getAllFilesToTest();
+    $testFiles   = $this->getTestFiles();
+    return array_diff_key($testFiles, $filesToTest);
+  }
+
 }

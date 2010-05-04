@@ -13,7 +13,7 @@ class ecrGenericFilesToTest extends ecrFilesToTest
   {
     $basename = pathinfo($testedFile, PATHINFO_BASENAME);
     $class    = str_replace(array('.class.php'), array(''), $basename);
-//infosProviderSerieAllocine
+
     $testFiles = $this->getTestFiles();
 
     if (!array_key_exists($class, $testFiles))
@@ -21,10 +21,6 @@ class ecrGenericFilesToTest extends ecrFilesToTest
       throw new ecrTestFileNotFoundException($class);
     }
     return $testFiles[$class];
-
-    //$testedFile = $autoload->getClassPath($class);
-    //$testedFile = str_replace(sfConfig::get('sf_root_dir'), '.', $testedFile);
-    //return $testedFile;
   }
 
   public function getTestFiles()

@@ -28,6 +28,11 @@ class srCoverageReportTask extends sfBaseTask
     $report->setXDebugPath($options['xdebug-extension-path']);
     $renderer = ecrRendererFactory::create('emma', $report->getCoveragePercentByFile());
     file_put_contents($options['xml'], $renderer->render());
+    $filesToTest = new ecrGenericFilesToTest();
+    foreach ($filesToTest->getClassesNotFound() as $className => $testFile)
+    {
+      $this->log(sprintf('Fichier à tester non trouvé pour la classe "%s" (test : "%s")', $className, $testFile));
+    }
   }
 
 }
