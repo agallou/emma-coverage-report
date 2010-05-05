@@ -30,7 +30,11 @@ class ecrGenericFilesToTest extends ecrFilesToTest
 
     if (!array_key_exists($class, $testFiles))
     {
-      throw new ecrTestFileNotFoundException($class);
+      if (!array_key_exists(strtolower($class), $testFiles))
+      {
+        throw new ecrTestFileNotFoundException($class);
+      }
+      return $testFiles[strtolower($class)];
     }
     return $testFiles[$class];
   }

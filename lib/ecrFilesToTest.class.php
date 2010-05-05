@@ -72,8 +72,8 @@ abstract class ecrFilesToTest
    */
   public function getClassesNotFound()
   {
-    $filesToTest = $this->getAllFilesToTest();
-    $testFiles   = $this->getTestFiles();
+    $filesToTest = array_change_key_case($this->getAllFilesToTest());
+    $testFiles   = array_change_key_case($this->getTestFiles());
     return array_diff_key($testFiles, $filesToTest);
   }
 
