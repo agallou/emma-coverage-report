@@ -102,7 +102,7 @@ abstract class ecrFilesToTest
           unset($files[$class]);
         }
       }
-      $file = realpath($path);
+      $file = realpath($file);
     }
     return $files;
   }
