@@ -2,6 +2,10 @@
 class ecrGenericFilesToTest extends ecrFilesToTest
 {
 
+  /**
+   * (non-PHPdoc)
+   * @see plugins/agEmmaCoverageReportPlugin/lib/ecrFilesToTest#getAllFilesToTest()
+   */
   public function getAllFilesToTest()
   {
     $classes = array();
@@ -13,14 +17,22 @@ class ecrGenericFilesToTest extends ecrFilesToTest
       $autoload->reloadClasses(true);
       $classes += $autoload->getAllFiles();
     }
-    return array_unique($classes);
+    return $this->filterExcludedFiles(array_unique($classes));
   }
 
+  /**
+   *
+   * @return array
+   */
   protected function getApplications()
   {
     return sfFinder::type('dir')->maxdepth(0)->relative()->in(sfConfig::get('sf_apps_dir'));
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see plugins/agEmmaCoverageReportPlugin/lib/ecrFilesToTest#getTestFileFromTestedFile($testFile)
+   */
   public function getTestFileFromTestedFile($testedFile)
   {
     $basename = pathinfo($testedFile, PATHINFO_BASENAME);
@@ -39,6 +51,10 @@ class ecrGenericFilesToTest extends ecrFilesToTest
     return $testFiles[$class];
   }
 
+  /**
+   *
+   * @return array
+   */
   public function getTestFiles()
   {
     $ecrReport = new ecrReport();

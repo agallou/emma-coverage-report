@@ -34,4 +34,14 @@ class ecrUtils
 
   }
 
+  public static function getExcludedFiles($configFile)
+  {
+    return sfYaml::load($configFile);
+  }
+
+  public static function getRelativePathFromSfRoot($path)
+  {
+    return substr($path, strlen(sfConfig::get('sf_root_dir'))+1);
+  }
+
 }

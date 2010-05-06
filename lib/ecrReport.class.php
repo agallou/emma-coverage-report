@@ -10,6 +10,32 @@ class ecrReport
 
   /**
    *
+   * @var array
+   */
+  protected $filesToTestOptions = array();
+
+  /**
+   *
+   * @param array $options
+   *
+   * @return void
+   */
+  public function setOptionsForFilesToTest(array $options)
+  {
+    $this->filesToTestOptions = $options;
+  }
+
+  /**
+   *
+   * @return array
+   */
+  public function getOptionsForFilesToTest()
+  {
+    return $this->filesToTestOptions;
+  }
+
+  /**
+   *
    * @return array
    */
   public function getCoveragePercentByFile()
@@ -20,7 +46,7 @@ class ecrReport
     {
       $options = sprintf(' --xdebug-extension-path="%s" ', $this->getXDebugPath());
     }
-    $filesToTest = new ecrGenericFilesToTest();
+    $filesToTest = new ecrGenericFilesToTest($this->getOptionsForFilesToTest());
     $files       = $filesToTest->getAllFilesToTest();
     foreach ($files as $testedFile)
     {
