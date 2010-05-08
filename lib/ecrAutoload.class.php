@@ -1,13 +1,17 @@
 <?php
 class ecrAutoload extends sfAutoload
 {
+  /**
+   *
+   * @var ecrAutoload
+   */
   static protected $instance = null;
 
   /**
    *
    * @param $cacheFile
    *
-   * @return ecrSimpleAutoload
+   * @return ecrAutoload
    */
   static public function getInstance()
   {
@@ -42,4 +46,14 @@ class ecrAutoload extends sfAutoload
     }
     return $this->classes[$class];
   }
+
+  /**
+   *
+   * @return void
+   */
+  public function forceRefreshCache()
+  {
+    self::$freshCache = false;
+  }
+
 }

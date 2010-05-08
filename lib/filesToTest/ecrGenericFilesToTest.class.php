@@ -14,6 +14,7 @@ class ecrGenericFilesToTest extends ecrFilesToTest
       $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', true);
       sfContext::createInstance($configuration);
       $autoload = ecrAutoload::getInstance();
+      $autoload->forceRefreshCache();
       $autoload->reloadClasses(true);
       $classes += $autoload->getAllFiles();
     }
