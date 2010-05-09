@@ -105,6 +105,8 @@ class ecrEmmaRenderer extends ecrRenderer
       $testedLines = round($coveragePercent / 100 * $numberOfLines);
       $totalLines += $numberOfLines;
       $totalTestedLines += $testedLines;
+      isset($testedLinesPackage[$key]) || $testedLinesPackage[$key] = 0;
+      isset($totalLinesPackage[$key]) || $totalLinesPackage[$key] = 0;
       $testedLinesPackage[$key] += $testedLines;
       $totalLinesPackage[$key] += $numberOfLines;
       $coverageString = sprintf('%s (%s/%s)', $coveragePercent, $testedLines, $numberOfLines);
