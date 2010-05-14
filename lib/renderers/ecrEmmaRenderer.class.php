@@ -81,8 +81,13 @@ class ecrEmmaRenderer extends ecrRenderer
   public function appendInfosFromMethodCoverage(DOMDocument $dom, DOMElement $element, methodCoverage $methodCoverage)
   {
     $infos = array(
-      'block' => $this->getEmptyBlock(),
-      'line'  => array(
+      'method' => array(
+        'pourcent' => $methodCoverage->isFullyCovered() ? 100 : 0,
+        'covered'  => $methodCoverage->isFullyCovered() ? 1 : 0,
+        'total'    => 1,
+      ),
+      'block'  => $this->getEmptyBlock(),
+      'line'   => array(
         'pourcent' => $methodCoverage->getCoveredLinesPourcent(),
         'covered'  => $methodCoverage->getCoveredLines(),
         'total'    => $methodCoverage->getTotalLines(),
@@ -94,6 +99,11 @@ class ecrEmmaRenderer extends ecrRenderer
   public function appendInfosFromClassCoverage(DOMDocument $dom, DOMElement $element, classCoverage $classCoverage)
   {
     $infos = array(
+      'class'  => array(
+        'pourcent' => $classCoverage->isFullyCovered() ? 100 : 0,
+        'covered'  => $classCoverage->isFullyCovered() ? 1 : 0,
+        'total'    => 1,
+      ),
       'method' => array(
         'pourcent' => $classCoverage->getCoveredMethodPourcent(),
         'covered'  => $classCoverage->getCoveredMethodCount(),
