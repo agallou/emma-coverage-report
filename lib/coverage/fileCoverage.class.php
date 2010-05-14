@@ -59,7 +59,7 @@ class fileCoverage
 
   public function getPackageName()
   {
-    return self::sSanitizeName(pathinfo($this->getName(), PATHINFO_DIRNAME));
+    return self::sanitizeName(pathinfo($this->getName(), PATHINFO_DIRNAME));
   }
 
   protected static function sanitizeName($name)
