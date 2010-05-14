@@ -1,26 +1,16 @@
 <?php
-class srCoverageReportTask extends sfBaseTask
+class ecrTokenTask extends sfbaseTask
 {
-  /**
-   * (non-PHPdoc)
-   * @see lib/vendor/symfony/task/sfTask#configure()
-   */
   protected function configure()
   {
-    $this->namespace           = 'ecr';
-    $this->name                = 'report';
-    $this->briefDescription    = 'Crée un rapport du coverage des tests unitaires pour emma';
-    $this->detailedDescription = 'Crée un rapport du coverage des tests unitaires pour emma';
+    $this->namespace = 'ecr';
+    $this->name = 'token';
 
     $this->addOption('xml', null, sfCommandOption::PARAMETER_REQUIRED, 'Path to save xml file');
     $this->addOption('xdebug-extension-path', null, sfCommandOption::PARAMETER_OPTIONAL, 'Path to xdebug extension');
     $this->addOption('exclusions', null, sfCommandOption::PARAMETER_OPTIONAL, 'yml file of exlusions globs');
   }
 
-    /**
-   * (non-PHPdoc)
-   * @see lib/vendor/symfony/task/sfTask#execute()
-   */
   protected function execute($arguments = array(), $options = array())
   {
     ecrUtils::checkForXDebugExtenstion($options);

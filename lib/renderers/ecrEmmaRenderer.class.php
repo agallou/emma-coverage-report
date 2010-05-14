@@ -18,9 +18,11 @@ class ecrEmmaRenderer extends ecrRenderer
     $srclines = $dom->createElement('srclines');
     $srcfiles = $dom->createElement('srcfiles');
 
-    $packages->setAttribute('value', 2);
-    $classes->setAttribute('value', 2);
-    $methods->setAttribute('value', 2);
+    $packages->setAttribute('value', $this->getFileCoverageIterator()->getPackageCount());
+    $classes->setAttribute('value', $this->getFileCoverageIterator()->getClassCount());
+    $methods->setAttribute('value', $this->getFileCoverageIterator()->getMethodCount());
+    $srcfiles->setAttribute('value', count($this->getFileCoverageIterator()));
+    $srclines->setAttribute('value', $this->getFileCoverageIterator()->getTotalLines());
 
     $stats->appendChild($packages);
     $stats->appendChild($classes);
@@ -36,143 +38,146 @@ class ecrEmmaRenderer extends ecrRenderer
     $data->appendChild($all);
     $report->appendChild($data);
 
-    $coverageClass = $dom->createElement('coverage');
-    $coverageClass->setAttribute('type', 'class, %');
-    $coverageClass->setAttribute('value', '0% (0/0)');
-    $all->appendChild($coverageClass);
+    $this->appendInfosFromFileCoverageIterator($dom, $all, $this->getFileCoverageIterator());
 
-    $coverageMethod = $dom->createElement('coverage');
-    $coverageMethod->setAttribute('type', 'method, %');
-    $coverageMethod->setAttribute('value', '0% (0/0)');
-    $all->appendChild($coverageMethod);
-
-    $coverageBlock = $dom->createElement('coverage');
-    $coverageBlock->setAttribute('type', 'block, %');
-    $coverageBlock->setAttribute('value', '0% (0/0)');
-    $all->appendChild($coverageBlock);
-
-    $elementTotalLines = $dom->createElement('coverage');
-    $elementTotalLines->setAttribute('type', 'line, %');
-    $all->appendChild($elementTotalLines);
-
-    $dirs = array();
-
-    foreach (array_keys($coverageByFile) as $file)
+    /* @var $filesCoverageInPackage FileCoverageIterator */
+    foreach ($this->getFileCoverageIterator()->getByPackage() as $packageName => $filesCoverageInPackage)
     {
-      $dirs[] = str_replace(array('/', '.'), array('_', ''), pathinfo($file, PATHINFO_DIRNAME));
+      $package = $dom->createElement('package');
+      $package->setAttribute('name', $packageName);
+      $this->appendInfosFromFileCoverageIterator($dom, $package, $filesCoverageInPackage);
+
+      /* @var $coverageFile fileCoverage */
+      foreach ($filesCoverageInPackage as $coverageFile)
+      {
+        $srcfile = $dom->createElement('srcfile');
+        $srcfile->setAttribute('name', $coverageFile->getName());
+        $this->appendInfosFromFileCoverage($dom, $srcfile, $coverageFile);
+
+        /* @var $coverageClass classCoverage */
+        foreach ($coverageFile->getClassCoverageIterator() as $coverageClass)
+        {
+          $class = $dom->createElement('class');
+          $class->setAttribute('name', $coverageClass->getName());
+          $this->appendInfosFromClassCoverage($dom, $class, $coverageClass);
+          foreach ($coverageClass->getMethodCoverageIterator() as $methodCoverage)
+          {
+            $method = $dom->createElement('method');
+            $method->setAttribute('name', $methodCoverage->getName());
+            $this->appendInfosFromMethodCoverage($dom, $method, $methodCoverage);
+            $class->appendChild($method);
+          }
+          $srcfile->appendChild($class);
+        }
+        $package->appendChild($srcfile);
+      }
+
+      $all->appendChild($package);
     }
-    $dirs = array_unique($dirs);
-
-    $packagesTab = array();
-    $totalLinesPackageElements = array();
-    foreach ($dirs as $dir)
-    {
-      $coverageClass = $dom->createElement('coverage');
-      $coverageClass->setAttribute('type', 'class, %');
-      $coverageClass->setAttribute('value', '0% (0/0)');
-
-      $coverageMethod = $dom->createElement('coverage');
-      $coverageMethod->setAttribute('type', 'method, %');
-      $coverageMethod->setAttribute('value', '0% (0/0)');
-
-      $coverageBlock = $dom->createElement('coverage');
-      $coverageBlock->setAttribute('type', 'block, %');
-      $coverageBlock->setAttribute('value', '0% (0/0)');
-
-      $totalLinesPackageElements[$dir] = $dom->createElement('coverage');
-      $totalLinesPackageElements[$dir]->setAttribute('type', 'line, %');
-
-      $packagesTab[$dir] = $dom->createElement('package');
-      $packagesTab[$dir]->setAttribute('name', $dir);
-      $packagesTab[$dir]->appendChild($coverageClass);
-      $packagesTab[$dir]->appendChild($coverageMethod);
-      $packagesTab[$dir]->appendChild($coverageBlock);
-      $packagesTab[$dir]->appendChild($totalLinesPackageElements[$dir]);
-      $all->appendChild($packagesTab[$dir]);
-    }
-
-    $totalLines       = 0;
-    $totalTestedLines = 0;
-    $testedLinesPackage = array();
-    $totalLinesPackage  = array();
-    foreach ($coverageByFile as $file => $coveragePercent)
-    {
-      $key = str_replace(array('/', '.'), array('_', ''), pathinfo($file, PATHINFO_DIRNAME));
-      $srcfile = $dom->createElement('srcfile');
-      $strFile = str_replace("/", "_", $file);
-      $srcfile->setAttribute('name', $strFile);
-      $numberOfLines = $this->getNumberOfLinesFile(sfConfig::get('sf_root_dir') . DIRECTORY_SEPARATOR . $file);
-      $testedLines = round($coveragePercent / 100 * $numberOfLines);
-      $totalLines += $numberOfLines;
-      $totalTestedLines += $testedLines;
-      isset($testedLinesPackage[$key]) || $testedLinesPackage[$key] = 0;
-      isset($totalLinesPackage[$key]) || $totalLinesPackage[$key] = 0;
-      $testedLinesPackage[$key] += $testedLines;
-      $totalLinesPackage[$key] += $numberOfLines;
-      $coverageString = sprintf('%s (%s/%s)', $coveragePercent, $testedLines, $numberOfLines);
-
-      $coverageClass = $dom->createElement('coverage');
-      $coverageClass->setAttribute('type', 'class, %');
-      $coverageClass->setAttribute('value', '0% (0/0)');
-      $srcfile->appendChild($coverageClass);
-
-      $coverageMethod = $dom->createElement('coverage');
-      $coverageMethod->setAttribute('type', 'method, %');
-      $coverageMethod->setAttribute('value', '0% (0/0)');
-      $srcfile->appendChild($coverageMethod);
-
-      $coverageBlock = $dom->createElement('coverage');
-      $coverageBlock->setAttribute('type', 'block, %');
-      $coverageBlock->setAttribute('value', '0% (0/0)');
-      $srcfile->appendChild($coverageBlock);
-
-      $coverageLine = $dom->createElement('coverage');
-      $coverageLine->setAttribute('type', 'line, %');
-      $coverageLine->setAttribute('value', $coverageString);
-      $srcfile->appendChild($coverageLine);
-
-      $strClass = pathinfo($file, PATHINFO_FILENAME);
-
-      $class = $dom->createElement('class');
-      $class->setAttribute('name', $strClass);
-      $coverageClass2 = clone $coverageClass;
-      $coverageMethod2 = clone $coverageMethod;
-      $coverageBlock2 = clone $coverageBlock;
-      $coverageLine2 = clone $coverageLine;
-      $class->appendChild($coverageClass2);
-      $class->appendChild($coverageMethod2);
-      $class->appendChild($coverageBlock2);
-      $class->appendChild($coverageLine2);
-
-      $method = $dom->createElement('method');
-      $method->setAttribute('name', $strClass);
-      $coverageMethod3 = clone $coverageMethod;
-      $coverageBlock3 = clone $coverageBlock;
-      $coverageLine3 = clone $coverageLine;
-      $method->appendChild($coverageMethod3);
-      $method->appendChild($coverageBlock3);
-      $method->appendChild($coverageLine3);
-
-      $class->appendChild($method);
-
-      $srcfile->appendChild($class);
-
-      $packagesTab[$key]->appendChild($srcfile);
-    }
-
-    foreach($dirs as $dir)
-    {
-      $totalLinesString = sprintf('%s%% (%s/%s)', round($testedLinesPackage[$dir]/$totalLinesPackage[$dir]*100), $testedLinesPackage[$dir], $totalLinesPackage[$dir]);
-      $totalLinesPackageElements[$dir]->setAttribute('value', $totalLinesString);
-    }
-
-    $stringTotalLines = sprintf('%s%% (%s/%s)', round($totalTestedLines/$totalLines*100), $totalTestedLines, $totalLines);
-    $elementTotalLines->setAttribute('value', $stringTotalLines);
-
-    $srcfiles->setAttribute('value', count($coverageByFile));
-    $srclines->setAttribute('value', $totalLines);
-
     return $dom->saveXml();
+  }
+
+
+  public function appendInfosFromMethodCoverage(DOMDocument $dom, DOMElement $element, methodCoverage $methodCoverage)
+  {
+    $infos = array(
+      'block' => $this->getEmptyBlock(),
+      'line'  => array(
+        'pourcent' => $methodCoverage->getCoveredLinesPourcent(),
+        'covered'  => $methodCoverage->getCoveredLines(),
+        'total'    => $methodCoverage->getTotalLines(),
+      ),
+    );
+    $this->appendInfos($dom, $element, $infos);
+  }
+
+  public function appendInfosFromClassCoverage(DOMDocument $dom, DOMElement $element, classCoverage $classCoverage)
+  {
+    $infos = array(
+      'method' => array(
+        'pourcent' => $classCoverage->getCoveredMethodPourcent(),
+        'covered'  => $classCoverage->getCoveredMethodCount(),
+        'total'    => $classCoverage->getMethodCount(),
+      ),
+      'block'  => $this->getEmptyBlock(),
+      'line'   => array(
+        'pourcent' => $classCoverage->getCoveredLinesPourcent(),
+        'covered'  => $classCoverage->getCoveredLines(),
+        'total'    => $classCoverage->getTotalLines(),
+      ),
+    );
+    $this->appendInfos($dom, $element, $infos);
+  }
+
+  public function appendInfosFromFileCoverage(DOMDocument $dom, DOMElement $element, fileCoverage $fileCoverage)
+  {
+    $infos = array(
+      'class'  => array(
+        'pourcent' => $fileCoverage->getCoveredClassPourcent(),
+        'covered'  => $fileCoverage->getCoveredClassCount(),
+        'total'    => $fileCoverage->getClassCount(),
+      ),
+      'method' => array(
+        'pourcent' => $fileCoverage->getCoveredMethodPourcent(),
+        'covered'  => $fileCoverage->getCoveredMethodCount(),
+        'total'    => $fileCoverage->getMethodCount(),
+      ),
+      'block'  => $this->getEmptyBlock(),
+      'line'   => array(
+        'pourcent' => $fileCoverage->getCoveredLinesPourcent(),
+        'covered'  => $fileCoverage->getCoveredLines(),
+        'total'    => $fileCoverage->getTotalLines(),
+      ),
+    );
+    $this->appendInfos($dom, $element, $infos);
+  }
+
+  public function appendInfosFromFileCoverageIterator(DOMDocument $dom, DOMElement $element, fileCoverageIterator $fileCoverage)
+  {
+    $infos = array(
+      'class'  => array(
+        'pourcent' => $fileCoverage->getCoveredClassPourcent(),
+        'covered'  => $fileCoverage->getCoveredClassCount(),
+        'total'    => $fileCoverage->getClassCount(),
+      ),
+      'method' => array(
+        'pourcent' => $fileCoverage->getCoveredMethodPourcent(),
+        'covered'  => $fileCoverage->getCoveredMethodCount(),
+        'total'    => $fileCoverage->getMethodCount(),
+      ),
+      'block'  => $this->getEmptyBlock(),
+      'line'   => array(
+        'pourcent' => $fileCoverage->getCoveredLinesPourcent(),
+        'covered'  => $fileCoverage->getCoveredLinesCount(),
+        'total'    => $fileCoverage->getTotalLines(),
+      ),
+    );
+    $this->appendInfos($dom, $element, $infos);
+  }
+
+  public function appendInfos(DOMDocument $dom, DOMElement $element, array $infos)
+  {
+    foreach ($infos as $name => $info)
+    {
+      $coverageClass = $dom->createElement('coverage');
+      $coverageClass->setAttribute('type', $name . ', %');
+      $coverageClass->setAttribute('value', sprintf(
+        '%d%% (%d/%d)',
+        $info['pourcent'],
+        $info['covered'],
+        $info['total']
+      ));
+      $element->appendChild($coverageClass);
+    }
+  }
+
+  protected function getEmptyBlock()
+  {
+    return array(
+      'pourcent' => 0,
+      'covered'  => 0,
+      'total'    => 0,
+    );
   }
 
 }

@@ -58,8 +58,7 @@ class ecrGenericFilesToTest extends ecrFilesToTest
    */
   public function getTestFiles()
   {
-    $ecrReport = new ecrReport();
-    $files     = sfFinder::type('file')->name('*.php')->in($ecrReport->getUnitTestsDir());
+    $files     = sfFinder::type('file')->name('*.php')->in($this->getUnitTestsDir());
     $testFiles = array();
     foreach ($files as $file)
     {
@@ -68,6 +67,11 @@ class ecrGenericFilesToTest extends ecrFilesToTest
       $testFiles[$class] = $file;
     }
     return $testFiles;
+  }
+
+  protected function getUnitTestsDir()
+  {
+    return sfConfig::get('sf_test_dir') . DIRECTORY_SEPARATOR . 'unit';
   }
 
 }

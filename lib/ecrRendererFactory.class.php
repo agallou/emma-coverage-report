@@ -4,17 +4,17 @@ class ecrRendererFactory
 
   /**
    *
-   * @param string $type
-   * @param array  $coverageByFile
+   * @param string               $type
+   * @param FileCoverageIterator $fileCoverage
    *
    * @return ecrRenderer
    */
-  public static function create($type, array $coverageByFile)
+  public static function create($type, FileCoverageIterator $fileCoverage)
   {
     switch ($type)
     {
       case 'emma':
-        return new ecrEmmaRenderer($coverageByFile);
+        return new ecrEmmaRenderer($fileCoverage);
         break;
       default:
         throw new sfException(sprintf('Type %s not accepted', var_export($type, true)));

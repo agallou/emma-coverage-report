@@ -4,9 +4,9 @@ abstract class ecrRenderer
 
   /**
    *
-   * @var array
+   * @var FileCoverageIterator
    */
-  protected $coverageByFile;
+  protected $fileCoverageiterator;
 
   /**
    *
@@ -14,9 +14,9 @@ abstract class ecrRenderer
    *
    * @return void
    */
-  public function __construct(array $coverageByFile)
+  public function __construct(FileCoverageIterator $fileCoverageiterator)
   {
-    $this->coverageByFile = $coverageByFile;
+    $this->fileCoverageiterator = $fileCoverageiterator;
   }
 
   /**
@@ -27,17 +27,11 @@ abstract class ecrRenderer
 
   /**
    *
-   * @param string $file
-   *
-   * @return int
+   * @return FileCoverageIterator
    */
-  protected function getNumberOfLinesFile($file)
+  protected function getFileCoverageIterator()
   {
-    if (!file_exists($file))
-    {
-      return 1;
-    }
-    return count(file($file));
+    return $this->fileCoverageiterator;
   }
 
 }
