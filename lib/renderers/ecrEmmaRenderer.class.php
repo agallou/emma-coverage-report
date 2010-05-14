@@ -51,7 +51,7 @@ class ecrEmmaRenderer extends ecrRenderer
       foreach ($filesCoverageInPackage as $coverageFile)
       {
         $srcfile = $dom->createElement('srcfile');
-        $srcfile->setAttribute('name', $coverageFile->getName());
+        $srcfile->setAttribute('name', $coverageFile->getSanitizedName());
         $this->appendInfosFromFileCoverage($dom, $srcfile, $coverageFile);
 
         /* @var $coverageClass classCoverage */

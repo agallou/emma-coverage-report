@@ -52,9 +52,19 @@ class fileCoverage
     return $this->name;
   }
 
+  public function getSanitizedName()
+  {
+    return self::sanitizeName($this->getName());
+  }
+
   public function getPackageName()
   {
-    return str_replace(array('/', '.'), array('_', ''), pathinfo($this->getName(), PATHINFO_DIRNAME));
+    return self::sSanitizeName(pathinfo($this->getName(), PATHINFO_DIRNAME));
+  }
+
+  protected static function sanitizeName($name)
+  {
+    return str_replace(array('/', '.'), array('_', ''), $name);
   }
 
   public function getClassCount()
