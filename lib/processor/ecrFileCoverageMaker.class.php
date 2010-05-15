@@ -10,20 +10,6 @@ class ecrFileCoverageMaker
     $this->fileName= $fileName;
   }
 
-//  protected function execute($arguments = array(), $options = array())
-//  {
-//    $coverage = $this->getFileCoverage();
-//    /* @var $class classCoverage */
-//    foreach ($coverage->getClasssCoverage() as $class)
-//    {
-//      $this->logSection('classe', $class->toString());
-//      foreach ($class->getMethodsCoverage() as $method)
-//      {
-//        $this->log($method->toString());
-//      }
-//    }
-//  }
-
   public function getFileCoverage()
   {
     $coverage = new fileCoverage($this->getAbsoluteFileName());
@@ -35,29 +21,7 @@ class ecrFileCoverageMaker
   {
     return substr($this->getTestedFile(), strlen(sfConfig::get('sf_root_dir')) + 1);
   }
-/*
-  protected function renderStats($count)
-  {
-    $stats = '';
-    foreach ($count as $name => $token)
-    {
-      if ($token['count'] > 0)
-      {
-        $all      = $token['count'];
-        $covered  = $token['tested'];
-        $pourcent = $covered / $all * 100;
-      }
-      else
-      {
-        $all       = 0;
-        $pourcent  = 0;
-        $covered   = 0;
-      }
-      $stats .= sprintf('%s %d%% %d/%d', $name, $pourcent, $covered, $all) . PHP_EOL;
-    }
-    return $stats;
-  }
-*/
+
   protected function getUnTestedLines()
   {
     if (is_null($this->unTestedLines))
@@ -70,11 +34,8 @@ class ecrFileCoverageMaker
       return $missing;
     }
     return $this->unTestedLines;
-    //return array();
-    //return array(46, 51, 138);
   }
 
-  //TODO
   public function setUntestedLines($unTestedLines)
   {
     $this->unTestedLines = $unTestedLines;
@@ -83,7 +44,6 @@ class ecrFileCoverageMaker
   protected function getTestedFile()
   {
     return $this->fileName;
-//    return 'lib/infosProvider/infosProviderSerieImdb.class.php';
   }
 
   protected function getAllCount($type = T_FUNCTION)

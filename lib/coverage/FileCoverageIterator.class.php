@@ -1,12 +1,44 @@
 <?php
+/**
+ * fileCoverageIterator.class.php
+ *
+ * PHP version 5
+ *
+ * @package    AgEmmaCoverageReport
+ * @subpackage Coverage
+ * @author     Adrien Gallou <adriengallou@gmail.com>
+ * @version    SVN: <svn_id>
+ *
+ */
+/**
+ * fileCoverageIterator
+ *
+ * @package    AgEmmaCoverageReport
+ * @subpackage Coverage
+ * @author     Adrien Gallou <adriengallou@gmail.com>
+ * @version    Release: <package_version>
+ *
+ */
 class fileCoverageIterator extends ecrIterator
 {
 
+  /**
+   * (non-PHPdoc)
+   *
+   * @see plugins/agEmmaCoverageReportPlugin/lib/utils/ecrIterator#getClass()
+   *
+   * @return string
+   */
   protected function getClass()
   {
     return 'fileCoverage';
   }
 
+  /**
+   * Return array of fileCoverageIterator with package name in key
+   *
+   * @return array
+   */
   public function getByPackage()
   {
     $packages = array();
@@ -22,6 +54,11 @@ class fileCoverageIterator extends ecrIterator
     return $packages;
   }
 
+  /**
+   * Return array of all packages names
+   *
+   * @return array
+   */
   public function getAllPackages()
   {
     $packages = array();
@@ -33,11 +70,21 @@ class fileCoverageIterator extends ecrIterator
     return array_unique($packages);
   }
 
+  /**
+   * Return number of packages
+   *
+   * @return int
+   */
   public function getPackageCount()
   {
     return count($this->getAllPackages());
   }
 
+  /**
+   * Return number of classes
+   *
+   * @return int
+   */
   public function getClassCount()
   {
     $classesCount = 0;
@@ -49,6 +96,11 @@ class fileCoverageIterator extends ecrIterator
     return $classesCount;
   }
 
+  /**
+   * Return number of methods
+   *
+   * @return int
+   */
   public function getMethodCount()
   {
     $methodCount = 0;
@@ -60,6 +112,11 @@ class fileCoverageIterator extends ecrIterator
     return $methodCount;
   }
 
+  /**
+   * Number of lines
+   *
+   * @return int
+   */
   public function getTotalLines()
   {
     $totalLines = 0;
@@ -71,6 +128,11 @@ class fileCoverageIterator extends ecrIterator
     return $totalLines;
   }
 
+  /**
+   * Number of covered lines
+   *
+   * @return int
+   */
   public function getCoveredLinesCount()
   {
     $lines = 0;
@@ -82,6 +144,11 @@ class fileCoverageIterator extends ecrIterator
     return $lines;
   }
 
+  /**
+   * Number of covered classes
+   *
+   * @return int
+   */
   public function getCoveredClassCount()
   {
     $classCount = 0;
@@ -93,6 +160,11 @@ class fileCoverageIterator extends ecrIterator
     return $classCount;
   }
 
+  /**
+   * Pourcent of covered classes
+   *
+   * @return int
+   */
   public function getCoveredClassPourcent()
   {
     if ($this->getClassCount() == 0)
@@ -102,6 +174,11 @@ class fileCoverageIterator extends ecrIterator
     return $this->getCoveredClassCount() / $this->getClassCount() * 100;
   }
 
+  /**
+   * Number of covered methods
+   *
+   * @return int
+   */
   public function getCoveredMethodCount()
   {
     $count = 0;
@@ -113,6 +190,11 @@ class fileCoverageIterator extends ecrIterator
     return $count;
   }
 
+  /**
+   * Pourcent of covered methods
+   *
+   * @return int
+   */
   public function getCoveredMethodPourcent()
   {
     if ($this->getMethodCount() == 0)
@@ -122,6 +204,11 @@ class fileCoverageIterator extends ecrIterator
     return $this->getCoveredMethodCount() / $this->getMethodCount() * 100;
   }
 
+  /**
+   * Pourcent of covered lines
+   *
+   * @return int
+   */
   public function getCoveredLinesPourcent()
   {
     if ($this->getTotalLines() == 0)

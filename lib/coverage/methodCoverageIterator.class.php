@@ -1,12 +1,44 @@
 <?php
+/**
+ * methodCoverageIterator.class.php
+ *
+ * PHP version 5
+ *
+ * @package    AgEmmaCoverageReport
+ * @subpackage Coverage
+ * @author     Adrien Gallou <adriengallou@gmail.com>
+ * @version    SVN: <svn_id>
+ *
+ */
+/**
+ * methodCoverageIterator
+ *
+ * @package    AgEmmaCoverageReport
+ * @subpackage Coverage
+ * @author     Adrien Gallou <adriengallou@gmail.com>
+ * @version    Release: <package_version>
+ *
+ */
 class methodCoverageIterator extends ecrIterator
 {
 
+  /**
+   * (non-PHPdoc)
+   *
+   * @see plugins/agEmmaCoverageReportPlugin/lib/utils/ecrIterator#getClass()
+   *
+   * @return string
+   */
   protected function getClass()
   {
     return 'methodCoverage';
   }
 
+  /**
+   * Number of lines in all methods
+   *
+   * @return int
+   */
   public function getTotalLines()
   {
     $totalLines = 0;
@@ -18,6 +50,11 @@ class methodCoverageIterator extends ecrIterator
     return $totalLines;
   }
 
+  /**
+   * Number of covered lines in all methods
+   *
+   * @return int
+   */
   public function getCoveredLines()
   {
     $coveredLines = 0;
@@ -30,6 +67,7 @@ class methodCoverageIterator extends ecrIterator
   }
 
   /**
+   * Iterator of covered methods
    *
    * @return methodCoverageIterator
    */
@@ -47,11 +85,21 @@ class methodCoverageIterator extends ecrIterator
     return new methodCoverageIterator($coveredMethods);
   }
 
+  /**
+   * Number of covered methods
+   *
+   * @return int
+   */
   public function getCoveredMethodsCount()
   {
     return count($this->getCoveredMethods());
   }
 
+  /**
+   * Pourcent of covered methods
+   *
+   * @return int
+   */
   public function getCoveredMethodsPourcent()
   {
     if (count($this) == 0)
@@ -62,6 +110,7 @@ class methodCoverageIterator extends ecrIterator
   }
 
   /**
+   * Iterator of non covered methods
    *
    * @return methodCoverageIterator
    */
