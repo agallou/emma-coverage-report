@@ -27,7 +27,7 @@ class ecrFileCoverageMaker
     if (is_null($this->unTestedLines))
     {
       $missing = array();
-      for($i=$range[1];$i<=count(file($this->getTestedFile()));$i++)
+      for($i=1;$i<=count(file($this->getTestedFile()));$i++)
       {
         $missing[] = $i;
       }
