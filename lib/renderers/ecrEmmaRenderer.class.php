@@ -4,7 +4,6 @@ class ecrEmmaRenderer extends ecrRenderer
 
   public function render()
   {
-    $coverageByFile = $this->coverageByFile;
     $dom = new DOMDocument('1.0', 'UTF-8');
     $dom->formatOutput = true;
     $dom->appendChild($dom->createComment(' EMMA report, generated ' . date('r') . ' '));
