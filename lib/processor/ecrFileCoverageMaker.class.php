@@ -27,13 +27,37 @@ class ecrFileCoverageMaker
     if (is_null($this->unTestedLines))
     {
       $missing = array();
-      for($i=1;$i<=count(file($this->getTestedFile()));$i++)
+      for($i=1;$i<=$this->getNumberOfLinesInFile($this->getTestedFile());$i++)
       {
         $missing[] = $i;
       }
       return $missing;
     }
     return $this->unTestedLines;
+  }
+
+  protected static $numberOfLinesInFile = array();
+
+  protected function getNumberOfLinesInFile($filePath)
+  {
+    if (array_key_exists($filePath, self::$numberOfLinesInFile))
+    {
+      return self::$numberOfLinesInFile[$filePath];
+    }
+    $count = 0;
+    if (!file_exists($filePath))
+    {
+      self::$numberOfLinesInFile[$filePath] = $count;
+      return self::$numberOfLinesInFile[$filePath];
+    }
+    $file = new SplFileObject($filePath);
+    foreach ($file as $line)
+    {
+      $count++;
+    }
+    unset($file);
+    self::$numberOfLinesInFile[$filePath] = $count;
+    return self::$numberOfLinesInFile[$filePath];
   }
 
   public function setUntestedLines($unTestedLines)
@@ -76,7 +100,7 @@ class ecrFileCoverageMaker
       }
       $functionsPos[] = $token[2];
     }
-    $functionsPos[] = count(file($this->getTestedFile()));
+    $functionsPos[] = $this->getNumberOfLinesInFile(($this->getTestedFile()));
     for($i = 0; $i < (count($functionsPos)-1); $i++)
     {
       $unTestedMethod = false;
@@ -143,7 +167,7 @@ class ecrFileCoverageMaker
       }
       else
       {
-        $functionsPos[$i]['end'] = count(file($this->getTestedFile()));
+        $functionsPos[$i]['end'] = $this->getNumberOfLinesInFile(($this->getTestedFile()));
       }
       $functionsPos[$i]['count'] = $functionsPos[$i]['end'] - $functionsPos[$i]['begining'];
     }

@@ -2,23 +2,29 @@
 class ecrGenericFilesToTest extends ecrFilesToTest
 {
 
+  protected static $filesToTest = null;
+
   /**
    * (non-PHPdoc)
    * @see plugins/agEmmaCoverageReportPlugin/lib/ecrFilesToTest#getAllFilesToTest()
    */
   public function getAllFilesToTest()
   {
-    $classes = array();
-    foreach ($this->getApplications() as $app)
+    if (is_null(self::$filesToTest))
     {
-      $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', true);
-      sfContext::createInstance($configuration);
-      $autoload = ecrAutoload::getInstance();
-      $autoload->forceRefreshCache();
-      $autoload->reloadClasses(true);
-      $classes += $autoload->getAllFiles();
+      $classes = array();
+      foreach ($this->getApplications() as $app)
+      {
+        $configuration = ProjectConfiguration::getApplicationConfiguration($app, 'test', true);
+        sfContext::createInstance($configuration);
+        $autoload = ecrAutoload::getInstance();
+        $autoload->forceRefreshCache();
+        $autoload->reloadClasses(true);
+        $classes += $autoload->getAllFiles();
+      }
+      self::$filesToTest = $this->filterExcludedFiles(array_unique($classes));
     }
-    return $this->filterExcludedFiles(array_unique($classes));
+    return self::$filesToTest;
   }
 
   /**
