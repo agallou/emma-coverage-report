@@ -15,6 +15,7 @@ class srCoverageReportTask extends sfBaseTask
     $this->addOption('xml', null, sfCommandOption::PARAMETER_REQUIRED, 'Path to save xml file');
     $this->addOption('xdebug-extension-path', null, sfCommandOption::PARAMETER_OPTIONAL, 'Path to xdebug extension');
     $this->addOption('exclusions', null, sfCommandOption::PARAMETER_OPTIONAL, 'yml file of exlusions globs');
+    $this->addOption('use-phpdoctag', null, sfCommandOption::PARAMETER_NONE, 'use @codeCoverageIgnore tag to ignore functions');
   }
 
     /**
@@ -34,7 +35,14 @@ class srCoverageReportTask extends sfBaseTask
       $f_options['exclusions_globs'] = ecrUtils::getExcludedFiles($options['exclusions']);
     }
     $filesToTest = new ecrGenericFilesToTest($f_options);
-    $processor   = new ecrProcessor($filesToTest);
+    if ($options['use-phpdoctag'])
+    {
+      $processor = new ecrProcessorWithPhpdocIgnore($filesToTest);
+    }
+    else
+    {
+      $processor = new ecrProcessor($filesToTest);
+    }
     $processor->setXDebugPath($options['xdebug-extension-path']);
     $filesCoverage = $processor->process();
     $renderer = ecrRendererFactory::create('emma', $filesCoverage);
