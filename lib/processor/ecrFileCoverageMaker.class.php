@@ -140,6 +140,11 @@ class ecrFileCoverageMaker
     $posAfterToken = 0;
     foreach ($tokens as $token)
     {
+      $token_name = is_array($token) ? $token[0] : null;
+      if (is_null($token_name) || $token_name != $type)
+      {
+        continue;
+      }
       if (!is_null($previousToken))
       {
         if ($posAfterToken == $nameAfterToken)
@@ -150,11 +155,6 @@ class ecrFileCoverageMaker
           continue;
         }
         $posAfterToken++;
-      }
-      $token_name = is_array($token) ? $token[0] : null;
-      if (is_null($token_name) || $token_name != $type)
-      {
-        continue;
       }
       $previousToken = $token[2];
     }
